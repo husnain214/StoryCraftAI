@@ -1,4 +1,4 @@
 build
 .env
-node-modules
+node_modules
 .vs-code
