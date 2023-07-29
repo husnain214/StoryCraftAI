@@ -1,0 +1,4 @@
+build
+.env
+node-modules
+.vs-code
