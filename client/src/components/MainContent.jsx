@@ -1,6 +1,23 @@
-import "./App.css";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+import axios from 'axios'
+import "../App.css";
 
-function MainContent() {
+function MainContent({ handleDownloadAudio, audioData }) {
+  const [language, setLanguage] = useState('')
+  const [voice, setVoice] = useState('')
+  const [prompt, setPrompt] = useState('')
+  const [voiceList, setVoiceList] = useState([])
+
+  useEffect(() => {
+    const getVoiceList = async () => {
+      const response = await axios.get('http://localhost:3003/api/voices')
+      setVoiceList(response.data.voices)
+    }
+
+    getVoiceList()
+  }, [])
+
   return (
     <main>
       <section className="main-content">
@@ -14,24 +31,27 @@ function MainContent() {
             </div>
           </div>
           <div className="main-form">
-            <form action="">
+            <form onSubmit={handleDownloadAudio}>
               <h2>Lets Craft Stories</h2>
               <div className="voice-type">
                 <label htmlFor="voice">Select Voice</label>
-                <select name="voice" id="voice">
-                  <option value="">Voice</option>
-                  <option value="type1">type1</option>
-                  <option value="type2">type2</option>
-                  <option value="type3">type3</option>
+                <select value={voice} onChange={({ target }) => setVoice(target.value)} name="voice" id="voice">
+                  {
+                    voiceList.map(voice => <option key={voice.voice_id} value={voice.voice_id}>{voice.name}</option>)
+                  }
                 </select>
               </div>
               <div className="language">
                 <label htmlFor="language">Select Language</label>
-                <select name="language" id="language">
-                  <option value="">Language</option>
+                <select value={language} onChange={({ target }) => setLanguage(target.value)} name="language" id="language">
                   <option value="english">English</option>
-                  <option value="urdu">Urdu</option>
                   <option value="spanish">Spanish</option>
+                  <option value="french">French</option>
+                  <option value="hindi">Hindi</option>
+                  <option value="italian">Italian</option>
+                  <option value="german">German</option>
+                  <option value="polish">Polish</option>
+                  <option value="portuguese">Portuguese</option>
                 </select>
               </div>
               <div>
@@ -39,12 +59,14 @@ function MainContent() {
                 <textarea
                   name="description"
                   id="description"
+                  value={prompt} 
+                  onChange={({ target }) => setPrompt(target.value)} 
                   cols="30"
                   rows="10"
-                ></textarea>
+                />
               </div>
 
-              <button onClick={handleDownloadAudio}>Create Now!</button>
+              <button>Create Now!</button>
               {audioData && (
                 <audio controls>
                   <source src={audioData} type="audio/mpeg" />

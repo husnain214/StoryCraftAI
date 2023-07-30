@@ -4,32 +4,28 @@ const storyRouter = require('express').Router()
 const logger = require('../utils/logger')
 const axios = require('axios')
 
-// const { ChatOpenAI } = require('langchain/chat_models/openai')
-// const { HumanMessage, SystemMessage } = require('langchain/schema')
+const { ChatOpenAI } = require('langchain/chat_models/openai')
+const { HumanMessage } = require('langchain/schema')
 const voice = require('elevenlabs-node')
 
-// const chat = new ChatOpenAI({
-//   openAIApiKey: process.env.OPENAI_API_KEY,
-// })
+const chat = new ChatOpenAI({
+  openAIApiKey: process.env.OPENAI_API_KEY,
+})
 
-storyRouter.get('/api/stories/create', async (request, response) => {
-  // const { body } = request
-  // const result = await chat.call([
-  //   new SystemMessage(
-  //     'You create bed time stories using the given prompts.'
-  //   )
-  // ],[
-  //   new HumanMessage(
-  //     'Write a short bed time story about a little girl and a dog.',
-  //   ),
-  // ])
-  const content = 'Once upon a time, in a cozy little town nestled at the foot of a majestic.';
+storyRouter.post('/api/stories/create', async (request, response) => {
+  const { voiceID, language, prompt } = request.body
+
+  const result = await chat.call([
+    new HumanMessage(`Write a short children story in ${language} language with this prompt: ${prompt}`),
+  ])
+
+  console.log(result.content)
 
   try {
     const voiceRes = await voice.textToSpeechStream(
       process.env.ELEVEN_LABS_API_KEY,
-      '21m00Tcm4TlvDq8ikWAM',
-      content
+      voiceID,
+      result.content
     )
 
     response.setHeader('Content-Type', 'audio/mpeg')

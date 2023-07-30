@@ -7,15 +7,29 @@ import axios from "axios";
 function App() {
   const [audioData, setAudioData] = useState(null);
 
-  const handleDownloadAudio = async () => {
+  const handleDownloadAudio = async event => {
+    event.preventDefault()
+    console.log(event.target)
+    const formData = new FormData(event.target)
+
+    for(const [key, value] of formData.entries()) {
+      console.log(key, value)
+    }
+
+    const sendData = {
+      prompt: formData.get('description'),
+      voiceID: formData.get('voice'),
+      language: formData.get('language')
+    }
+
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/download-story",
+      const response = await axios.post(
+        "http://localhost:3003/api/stories/create",
+        sendData,
         {
-          responseType: "blob",
+          responseType: "blob"
         }
       );
-
       // Create a blob URL from the response data
       const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
       setAudioData(URL.createObjectURL(audioBlob));
