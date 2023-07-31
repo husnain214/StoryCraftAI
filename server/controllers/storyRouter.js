@@ -19,8 +19,6 @@ storyRouter.post('/api/stories/create', async (request, response) => {
     new HumanMessage(`Write a short children story in ${language} language with this prompt: ${prompt}`),
   ])
 
-  console.log(result.content)
-
   try {
     const voiceRes = await voice.textToSpeechStream(
       process.env.ELEVEN_LABS_API_KEY,
