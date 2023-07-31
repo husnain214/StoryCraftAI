@@ -1,20 +1,17 @@
-import "./App.css";
-import Navbar from "./components/Navbar.jsx";
-import MainContent from "./components/MainContent.jsx";
-import { useState } from "react";
-import axios from "axios";
+import "./App.css"
+import Navbar from "./components/Navbar.jsx"
+import MainContent from "./components/MainContent.jsx"
+import { useState } from "react"
+import axios from "axios"
 
 function App() {
-  const [audioData, setAudioData] = useState(null);
+  const [audioData, setAudioData] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleDownloadAudio = async event => {
     event.preventDefault()
-    console.log(event.target)
+    setLoading(true)
     const formData = new FormData(event.target)
-
-    for(const [key, value] of formData.entries()) {
-      console.log(key, value)
-    }
 
     const sendData = {
       prompt: formData.get('description'),
@@ -24,29 +21,33 @@ function App() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3003/api/stories/create",
+        "/api/stories/create",
         sendData,
         {
           responseType: "blob"
         }
-      );
-      // Create a blob URL from the response data
-      const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
-      setAudioData(URL.createObjectURL(audioBlob));
+      )
+      const audioBlob = new Blob([response.data], { type: "audio/mpeg" })
+      setAudioData(URL.createObjectURL(audioBlob))
     } catch (error) {
-      console.error("Error fetching audio:", error);
+      console.error("Error fetching audio:", error)
     }
-  };
+
+    setTimeout(() => {
+      setLoading(false)
+    }, 3000)
+  }
 
   return (
     <>
       <Navbar />
       <MainContent
+        loading={loading}
         audioData={audioData}
         handleDownloadAudio={handleDownloadAudio}
       />
     </>
-  );
+  )
 }
 
-export default App;
+export default App

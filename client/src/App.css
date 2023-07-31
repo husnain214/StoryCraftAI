@@ -145,6 +145,10 @@ nav > div {
   background-color: var(--dark-maroon);
 }
 
+.main-form svg {
+  margin-inline: auto;
+}
+
 /* _______________________________ */
 /* _________MEDIA QUERIES_________ */
 /* _______________________________ */

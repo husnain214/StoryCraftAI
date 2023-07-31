@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import axios from 'axios'
+import { InfinitySpin } from 'react-loader-spinner'
 import "../App.css";
 
-function MainContent({ handleDownloadAudio, audioData }) {
+function MainContent({ handleDownloadAudio, audioData, loading }) {
   const [language, setLanguage] = useState('')
   const [voice, setVoice] = useState('')
   const [prompt, setPrompt] = useState('')
@@ -11,8 +12,12 @@ function MainContent({ handleDownloadAudio, audioData }) {
 
   useEffect(() => {
     const getVoiceList = async () => {
-      const response = await axios.get('http://localhost:3003/api/voices')
-      setVoiceList(response.data.voices)
+      try {
+        const response = await axios.get('/api/voices')
+        setVoiceList(response.data.voices) 
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     getVoiceList()
@@ -55,7 +60,7 @@ function MainContent({ handleDownloadAudio, audioData }) {
                 </select>
               </div>
               <div>
-                <label htmlFor="description">Prompt your description</label>
+                <label htmlFor="description">Description</label>
                 <textarea
                   name="description"
                   id="description"
@@ -67,6 +72,10 @@ function MainContent({ handleDownloadAudio, audioData }) {
               </div>
 
               <button>Create Now!</button>
+              <InfinitySpin 
+                width={loading ? '200': '0'}
+                color="rgb(121, 16, 73)"
+              />
               {audioData && (
                 <audio controls>
                   <source src={audioData} type="audio/mpeg" />

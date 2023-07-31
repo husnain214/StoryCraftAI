@@ -4,10 +4,14 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node --inspect main.js",
-    "dev": "nodemon --inspect main.js",
+    "start": "node main.js",
+    "dev": "nodemon main.js",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf build && cd ../client/ && npm run build && cp -r dist ../server",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +28,7 @@
     "openai": "^3.3.0"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.0",
     "eslint": "^8.46.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0"

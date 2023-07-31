@@ -49,8 +49,7 @@ storyRouter.post('/api/stories/create', async (request, response) => {
 
 storyRouter.get('/api/voices', async (request, response) => {
   const voiceResponse = await axios.get('https://api.elevenlabs.io/v1/voices')
-  logger.info(voiceResponse.data)
-  return response.json(voiceResponse.data)
+  response.json(voiceResponse.data)
 })
 
 module.exports = storyRouter
